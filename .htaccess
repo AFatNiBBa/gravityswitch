@@ -1,0 +1,27 @@
+
+# Sostituisce il file di default per l'errore 404
+# Funziona perchè quella dell'errore 404 è la pagina di default quando si prova ad accedere ad un percorso dentro a "/private"
+ErrorDocument 404 /index.php?page=private/error
+
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+
+    # Se il file richiesto non esiste, apre "index.php" e mette il percorso dentro a "$_GET['page']"
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /index.php?page=$1 [L,QSA]
+
+    # Se il file esiste ma non è tra la lista qui sotto, reindirizza alla pagina d'errore
+    # Il file "/index.php" è l'unico file accessibile che termina in ".php"
+    # Non sono riuscito a reindirizzare direttamente alla pagina di errore quindi ho dovuto usare il comando 'ErrorDocument'
+    RewriteCond %{REQUEST_URI} !=/index.php
+    RewriteCond %{REQUEST_URI} !\.(js|gif|css|jpg|jpeg|png|ico|map|svg|woff|woff2|ttf|mp4|mov)$ [NC]
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule .* - [R=404,L]
+
+    # 'RewriteCond' è sempre necessario prima di 'RewriteRule'
+    # [QSA]: Appiccia i "$_GET" dell'url originale
+    # [R=?]: Response code
+    # [NC]:  Non case-sensitive
+    # [L]:   Return
+</IfModule>

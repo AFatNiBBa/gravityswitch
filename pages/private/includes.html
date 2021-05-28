@@ -1,0 +1,64 @@
+
+<!-- Three.js --> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>   <!-- Anime.js -->
+
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+
+<!-- Personalizzato -->
+<script src="utils/lib/game.js"></script>              <!-- Manager3D -->
+<script src="utils/global.js"></script>                <!-- Interazioni col PHP -->
+
+<!-- Bootstrap -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<style>
+    @import url("https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css");    /* Bootstrap */
+    @import url("https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro/css/all.css");          /* Font Awesome */
+    
+    /* Stile Personalizzato */
+    html, body {
+        height: 100%;
+    }
+
+    #root {
+        min-height: 600px;
+    }
+
+    #nav {
+		overflow: hidden !important;
+  		transition: height 1s;
+	}
+    
+    .centered {
+        position: absolute; /* or absolute */
+        top: 50%;
+        left: 50%;
+        /* bring your own prefixes */
+        transform: translate(-50%, -50%);
+    }
+
+    .cursor-pointer {
+		cursor: pointer;
+	}
+
+    .fw-thin {
+        font-weight: 100;
+    }
+
+    .fw-fat {
+        font-weight: 700;
+    }
+
+    .bg-full, .bg-frag {
+        /* Aggiustamento Immagine */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .bg-frag {
+        /* Triangolini */
+        background-image: url("utils/res/i/fragments.svg");
+    }
+</style>
