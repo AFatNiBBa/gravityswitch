@@ -10,7 +10,8 @@
     [WIP]: Funzioni online
         [WIP]: Classifiche
             [WIP]: Grafici
-        [WIP]: Account: Stesse funzioni anche sulla pagina, non solo sulle card
+        [WIP]: Account: I bottoni per l'amicizia devono essere relativi all'utente loggato, non al corrente (query.php)
+    [WIP]: Account: Se non sei loggato vai a 404
 */
 
 session_start();
@@ -49,6 +50,6 @@ try
 }
 catch (Exception $e)
 {
-    // echo $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
-    throw $e;
+    echo $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
+    // throw $e;
 }

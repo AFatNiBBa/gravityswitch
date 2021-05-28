@@ -37,8 +37,7 @@
     <div id="nav" class="overflow-hidden text-white pl-4">
         <img src="utils/res/logo.png" style="width: 60px; height: 60px; position: relative; bottom: 10px;">
         <span class="h1">
-            <span class="fw-fat">Big Black</span>
-            <span class="fw-thin">Death</span>
+            <span class="fw-fat">BigBlack</span><span class="fw-thin">Death</span>
         </span>
         <div class="float-right p-3 mr-3">By Sean</div>
     </div>

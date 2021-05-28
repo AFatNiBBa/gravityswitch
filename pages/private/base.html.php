@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> Big Black Death - <?= @htmlspecialchars(ucfirst(end(explode("/", $page ? $page : "main")))) ?> </title>
+		<title> BigBlackDeath - <?= @htmlspecialchars(ucfirst(end(explode("/", $page ? $page : "main")))) ?> </title>
 		<link rel="icon" href="utils/res/logo.png">
 		<meta charset="UTF-8">
 
