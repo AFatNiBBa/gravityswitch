@@ -2,16 +2,18 @@
 <?php
 
 /*
-    v23
+    v26
+    [WIP]: La skybox non fa più
+    [MAY]: "#wrapper" e ".item" di base (include.html.php)
     [WIP]: Rifà stile
         [WIP]: Colore bottone login adattato
-    [WIP]: Mappa sito sul footer (guardare anche il sitemap.xml)
     [MAY]: Niente ricarica pagina per le opzioni (Inserisci id livello)
-    [WIP]: Funzioni online
-        [WIP]: Classifiche
+    [WIP]: game.html.php senza livello fai accedere ai sette di base ed a "rnd" (private/default.html.php)
+    
+    [WIP]: Account
+        [WIP]: Partite giocate
+        [WIP]: Classifiche [partite/(morti*5+salti*2+tempo)] no nome
             [WIP]: Grafici
-        [WIP]: Account: I bottoni per l'amicizia devono essere relativi all'utente loggato, non al corrente (query.php)
-    [WIP]: Account: Se non sei loggato vai a 404
 */
 
 session_start();
@@ -44,12 +46,12 @@ try
     
     //| Reindirizzamento; Mette il template se non è in "plain/" o c'è ma non esiste; Da errore se prova ad accedere a "private/"
     if (preg_match("/^private\/.+/", $page))
-        assemble("private/base", [ "page" => "private/error", "code" => 404 ]);
+        assemble("private/template/base", [ "page" => "private/error", "code" => 404 ]);
     else if (!preg_match("/^plain\/.+/", $page) || !assemble($page, [], ""))
-        assemble("private/base", [ "page" => $page ]);
+        assemble("private/template/base", [ "page" => $page ]);
 }
 catch (Exception $e)
 {
-    echo $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
-    // throw $e;
+    // echo $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
+    throw $e;
 }

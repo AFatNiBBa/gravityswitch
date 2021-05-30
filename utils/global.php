@@ -152,7 +152,8 @@ class £
         ?>
             <script>
                 <?php if($url == -1): ?>
-                    window.history.back();
+                    if(window.history.length > 1) window.history.back();
+                    else window.location.href = "/?";
                 <?php elseif($url): ?>
                     window.location.href = <?= json_encode($url) ?>;
                 <?php else: ?>

@@ -1,8 +1,6 @@
 
 <?php
 
-use function PHPSTORM_META\map;
-
     function stats($user)
 	{
 		//| Visualizza il numero di livelli creati e di completamenti di un utente
@@ -72,14 +70,21 @@ use function PHPSTORM_META\map;
         }
     }
 
-    $id = $_GET["id"] ?? $_SESSION["account"]["id"];
-    $user = @$db($query["sel-stats(1)"], [ $id ])[0];
+    $logged = $_SESSION["account"]["id"];
+    $id = $_GET["id"] ?? $logged;
+    $user = @$db($query["sel-stats(2)"], [ $logged, $id ])[0];
 
     if ($search = isset($_GET["search"]))
-        $out = $db($query["sel-search(2)"], [ $id, "%{$_GET["search"]}%" ]);
+        $out = $db($query["sel-search(2)"], [ $logged, "%{$_GET["search"]}%" ]);
+    else if (!$id)
+    {
+        //| Se non è stato selezionato alcun utente e non si sta facendo una ricerca va alla home
+        $_MSG["template"] = false;
+        return £::href("/?");
+    }
     else
     {
-        $out = $db($query["sel-amici(1)"], [ $id ]);
+        $out = $db($query["sel-amici(2)"], [ $logged, $id ]);
         ?>
             <div class="m-5">
                 <span style="font-size: 100px;">
@@ -88,7 +93,7 @@ use function PHPSTORM_META\map;
                 <br>
                 <?php stats($user) ?>
                 <br>
-                <?php friend($user) ?>
+                <?php if($logged) friend($user) ?>
             </div>
         <?php
     }
@@ -117,7 +122,7 @@ use function PHPSTORM_META\map;
                     <a href="/?page=account&id=<?= htmlspecialchars(urlencode($row["id"])) ?>" class="btn btn-primary">
                         Profilo
                     </a>
-                    <?php friend($row) ?>
+                    <?php if($logged) friend($row) ?>
                 </div>
             </div>
         <?php endforeach ?>
