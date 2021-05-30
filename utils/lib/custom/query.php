@@ -39,7 +39,7 @@ $utenti = <<<SQL
         )
         FROM partite
         WHERE partite.utente = utenti.id
-    ) AS score
+    ) AS punteggio
     FROM utenti
 SQL;
 
@@ -62,7 +62,7 @@ return [
             (amicizie.attivo OR @a = @logged) AND   -- L'account è attivo o è quello dell'utente loggato
             @a IN (amicizie.a, amicizie.b) AND      -- Selezionato compreso tra le amicizie del collegamento
             utenti.id IN (amicizie.a, amicizie.b)   -- Compreso compreso tra le amicizie del collegamento
-        ORDER BY utenti.score DESC
+        ORDER BY utenti.punteggio DESC
     SQL),
 
     "sel-search(2)" => (<<<SQL
@@ -70,7 +70,7 @@ return [
         SELECT *
         FROM ($utenti) AS utenti
         WHERE nick LIKE ?
-        ORDER BY score DESC
+        ORDER BY punteggio DESC
     SQL),
 
     "sel-stats(2)" => (<<<SQL
@@ -78,6 +78,14 @@ return [
         SELECT *
         FROM ($utenti) AS utenti
         WHERE id = ?
-        ORDER BY score DESC
+        ORDER BY punteggio DESC
+    SQL),
+
+    "count-vettori(1)" => (<<<SQL
+        -- Ottiene il numero di vettori utilizzati da ogni livello
+        SELECT mappe.id AS mappa, COUNT(*) + 2 AS vettori
+        FROM mappe, blocchi, vettori
+        WHERE mappe.id = blocchi.mappa AND vettori.id = blocchi.vettore
+        GROUP BY mappe.id
     SQL)
 ];

@@ -21,7 +21,7 @@
                 <tr>
 					<td> Punteggio: </td>
 					<td class="rounded bg-info text-white px-2">
-						<?= htmlspecialchars(round($user["score"], 4) * 10000) ?>
+						<?= htmlspecialchars(round($user["punteggio"] * 10000)) ?>
 					</td>
 				</tr>
 			</table>

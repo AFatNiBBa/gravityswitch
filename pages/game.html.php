@@ -1,6 +1,8 @@
 
 <?php 
-    if ($_PATH == "") return assemble("private/default");
+    if ($_PATH == "")
+        if (!($_PATH = @$_GET["id"]))
+            return assemble("private/default");
     $_MSG["header"] = $_MSG["footer"] = false;
 
     function vector3($id)
