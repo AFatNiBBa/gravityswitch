@@ -5,6 +5,7 @@
     v26
     [WIP]: Rifà stile
         [WIP]: Colore bottone login adattato
+        [WIP]: default.html.php, account.html.php
 */
 
 session_start();
@@ -43,6 +44,6 @@ try
 }
 catch (Exception $e)
 {
-    // echo $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
-    throw $e;
+    echo $e->getMessage() . ' in ' . $e->getFile() . ': ' . $e->getLine();
+    // throw $e;
 }

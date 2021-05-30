@@ -18,6 +18,12 @@
 						<?= htmlspecialchars($user["partite"]) ?>
 					</td>
 				</tr>
+                <tr>
+					<td> Punteggio: </td>
+					<td class="rounded bg-info text-white px-2">
+						<?= htmlspecialchars(round($user["score"], 4) * 10000) ?>
+					</td>
+				</tr>
 			</table>
 		<?php
 	}
@@ -95,6 +101,7 @@
                 <br>
                 <?php if($logged) friend($user) ?>
             </div>
+            Amici:
         <?php
     }
 ?>
@@ -102,7 +109,7 @@
 <style>
     #level {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         grid-row-gap: 70px;
     }
 </style>

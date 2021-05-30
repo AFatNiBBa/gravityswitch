@@ -108,7 +108,7 @@
                                     name="search"
                                     class="form-control"
                                     placeholder="Cerca Utente"
-                                    <?php if($value = @$_POST[$name]): ?>
+                                    <?php if($value = @$_GET["search"]): ?>
                                         value="<?= htmlspecialchars($value) ?>"
                                     <?php endif ?>
                                 >
