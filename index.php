@@ -3,17 +3,8 @@
 
 /*
     v26
-    [WIP]: La skybox non fa più
-    [MAY]: "#wrapper" e ".item" di base (include.html.php)
     [WIP]: Rifà stile
         [WIP]: Colore bottone login adattato
-    [MAY]: Niente ricarica pagina per le opzioni (Inserisci id livello)
-    [WIP]: game.html.php senza livello fai accedere ai sette di base ed a "rnd" (private/default.html.php)
-    
-    [WIP]: Account
-        [WIP]: Partite giocate
-        [WIP]: Classifiche [partite/(morti*5+salti*2+tempo)] no nome
-            [WIP]: Grafici
 */
 
 session_start();

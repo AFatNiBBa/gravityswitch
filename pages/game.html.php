@@ -1,5 +1,6 @@
 
 <?php 
+    if ($_PATH == "") return assemble("private/default");
     $_MSG["header"] = $_MSG["footer"] = false;
 
     function vector3($id)
@@ -223,7 +224,6 @@
             <div class="modal-footer">
                 <a class="btn btn-danger" href="/?page=main"> Home </a>
                 <a class="btn btn-warning" href="/?page=game"> Scelta livelli </a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"> Torna al Gioco </button>
                 <button type="button" class="btn btn-primary" onclick='
                     ["background", "fixed", "consigli", "consigli-full"].forEach(k =>
                         storage[k] = $(`#${ k }`)[0].checked

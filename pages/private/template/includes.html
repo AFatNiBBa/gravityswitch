@@ -29,24 +29,52 @@
 		overflow: hidden !important;
   		transition: height 1s;
 	}
+
+    .grow {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 30px;
+    }
+
+    .grow .item {
+        /* Elemento che si ingrandisce con l'hover */
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+        align-items: center;
+        padding: 10px 30px 10px 10px;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);
+        cursor: pointer;
+        transition: transform 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98), box-shadow 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98);
+        background-color: #fff;
+    }
+
+    .grow .item:hover {
+        transform: scale(1.1);
+        box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);
+    }
     
     .centered {
-        position: absolute; /* or absolute */
+        /* Elemento completamente centrato */
+        position: absolute;
         top: 50%;
         left: 50%;
-        /* bring your own prefixes */
         transform: translate(-50%, -50%);
     }
 
     .cursor-pointer {
+        /* Mouse che indica */
 		cursor: pointer;
 	}
 
     .fw-thin {
+        /* Font poco spesso */
         font-weight: 100;
     }
 
     .fw-fat {
+        /* Font molto spesso */
         font-weight: 700;
     }
 

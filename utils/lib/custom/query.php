@@ -3,17 +3,17 @@
 
 # Template utilizzato da tutte le query sottostanti
 $utenti = <<<SQL
-    -- Tabella degli utenti con aggiunto il numero delle partite completate, dei livelli creati e lo stato di amicizia con l'utente loggato (parametro 1)
+    -- Tabella degli utenti con aggiunto il numero delle partite completate, dei livelli creati, lo stato di amicizia con l'utente loggato (parametro 1) ed il punteggio medio
     SELECT *, (
         -- Partite completate
         SELECT COUNT(*)
         FROM partite
-        WHERE utente = utenti.id
+        WHERE partite.utente = utenti.id
     ) AS partite, (
         -- Livelli creati
         SELECT COUNT(*) 
         FROM mappe
-        WHERE creatore = utenti.id
+        WHERE mappe.creatore = utenti.id
     ) AS generati, (
         -- Stato di attivazione dell'eventuale amicizia, se non vi è mette 'NULL'
         SELECT CASE
@@ -27,7 +27,19 @@ $utenti = <<<SQL
             @logged IN (amicizie.a, amicizie.b) AND
             utenti.id IN (amicizie.a, amicizie.b)
         LIMIT 1
-    ) AS amico
+    ) AS amico, (
+        -- Punteggio medio dell'utente
+        SELECT AVG(
+            (
+                -- Numero di blocchi della mappa nella partita
+                SELECT COUNT(*)
+                FROM blocchi
+                WHERE blocchi.mappa = partite.mappa
+            ) / (morti * 5 + salti * 2 + tempo)
+        )
+        FROM partite
+        WHERE partite.utente = utenti.id
+    ) AS score
     FROM utenti
 SQL;
 
@@ -50,7 +62,7 @@ return [
             (amicizie.attivo OR @a = @logged) AND   -- L'account è attivo o è quello dell'utente loggato
             @a IN (amicizie.a, amicizie.b) AND      -- Selezionato compreso tra le amicizie del collegamento
             utenti.id IN (amicizie.a, amicizie.b)   -- Compreso compreso tra le amicizie del collegamento
-        ORDER BY utenti.nick
+        ORDER BY utenti.score DESC
     SQL),
 
     "sel-search(2)" => (<<<SQL
@@ -58,7 +70,7 @@ return [
         SELECT *
         FROM ($utenti) AS utenti
         WHERE nick LIKE ?
-        ORDER BY nick
+        ORDER BY score DESC
     SQL),
 
     "sel-stats(2)" => (<<<SQL
@@ -66,6 +78,6 @@ return [
         SELECT *
         FROM ($utenti) AS utenti
         WHERE id = ?
-        ORDER BY nick
+        ORDER BY score DESC
     SQL)
 ];
