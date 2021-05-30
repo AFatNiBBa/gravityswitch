@@ -219,8 +219,10 @@ class App
     //| Manda le statistiche di completamento del livello, se non si è loggati da errore
     async save(id = $l)
     {
-        const mappa = await DB.send("mappa", [
-            id,
+        const mappa = await DB.send("mappa/exists", id)
+        ? id
+        : await DB.send(
+            "mappa",
             await JSON.parse(this.template).but(async x => {
                 x.player = await DB.send("vector3", x.player);
                 x.end = await DB.send("vector3", x.end);
@@ -230,7 +232,7 @@ class App
                     )
                 );
             })
-        ]);
+        );
         
         console.log({
             mappa,

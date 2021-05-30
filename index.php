@@ -6,6 +6,7 @@
     [WIP]: Rifà stile
         [WIP]: Colore bottone login adattato
         [WIP]: default.html.php, account.html.php
+    [MAY]: Punteggio su messaggio di vittoria
 */
 
 session_start();

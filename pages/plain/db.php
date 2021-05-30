@@ -43,24 +43,24 @@ switch ($_PATH)
         $db("INSERT INTO vettori (x, y, z) VALUES (?, ?, ?)", $data);
         $out = $db->pdo()->lastInsertId();
         break;
+    case "mappa/exists":
+        $out = $db->int("SELECT COUNT(*) FROM mappe WHERE id = ?", [ $data ]);
+        break;
     case "mappa":
-        if (!$db->int("SELECT COUNT(*) FROM mappe WHERE id = ?", [ $data[0] ]))
-        {
-            $db("INSERT INTO mappe (raggio, giocatore, traguardo, stile, creatore) VALUES (?, ?, ?, ?, ?)", [
-                $data[1]["size"],
-                $data[1]["player"],
-                $data[1]["end"],
-                json_encode($data[1]["style"]),
-                @$_SESSION["account"]["id"]
-            ]);
-            $out = $db->pdo()->lastInsertId();
+        //| Mappa
+        $db("INSERT INTO mappe (raggio, giocatore, traguardo, stile, creatore) VALUES (?, ?, ?, ?, ?)", [
+            $data["size"],
+            $data["player"],
+            $data["end"],
+            json_encode($data["style"]),
+            @$_SESSION["account"]["id"]
+        ]);
+        $out = $db->pdo()->lastInsertId();
 
-            //| Blocchi
-            $i = 0; # Ordine dei blocchi, per rendere il bot funzionante
-            foreach($data[1]["blocks"] as $e)
-                $db("INSERT INTO blocchi (mappa, vettore, num) VALUES (?, ?, ?)", [ $out, $e, $i++ ]);
-        }
-        else $out = $data[0];
+        //| Blocchi
+        $i = 0; # Ordine dei blocchi, per rendere il bot funzionante
+        foreach($data["blocks"] as $e)
+            $db("INSERT INTO blocchi (mappa, vettore, num) VALUES (?, ?, ?)", [ $out, $e, $i++ ]);
         break;
     case "partita":
         $data[4] = @$_SESSION["account"]["id"];
