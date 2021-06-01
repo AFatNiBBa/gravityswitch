@@ -10,6 +10,7 @@
             <ul class="list-unstyled text-small">
                 <li><a class="text-muted" href="/?">Home</a></li>
                 <li><a class="text-muted" href="/?page=game">Gioco</a></li>
+                <li><a class="text-muted" href="/?page=account">Account</a></li>
                 <li><a class="text-muted" href="/?page=login">Login</a></li>
                 <li><a class="text-muted" href="/?page=login/register">Registrazione</a></li>
             </ul>

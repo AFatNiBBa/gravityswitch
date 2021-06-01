@@ -188,6 +188,7 @@ class App
             //| Visualizzazione statistiche
             for (const k of [ "salti", "morti", "tempo" ])
                 $(`#${ k }`).text(this.stats?.[k] ?? "???");
+            $(`#punti`).text(Math.round((this.level.blocks.length / (this.stats.morti * 5 + this.stats.salti * 2 + this.stats.lastTime)) * 10000));
 
             //| Salvataggio statistiche
             this.save(window.template).catch(() => console.log("Esegui l'accesso per salvare le tue statistiche."));
@@ -196,7 +197,7 @@ class App
                 backdrop: 'static',
                 keyboard: false
             }).click(() => {
-                window.location.href = `/?page=game/${ isNaN($l) ? "rnd" : $l + 1 }`;
+                window.location.href = `/?page=game/${ encodeURI(isNaN($l) ? "rnd" : $l + 1) }`;
             });
         }
         else if (temp.distanceTo(center) > size3D(level.size))
@@ -234,9 +235,10 @@ class App
             })
         );
         
+        $("#mappa").text("#" + mappa).attr("href", `/?page=game/${ encodeURI(mappa) }`);
         console.log({
             mappa,
             partita: !!await DB.send("partita", [ mappa, this.stats.salti, this.stats.morti, this.stats.lastTime ])
-        })
+        });
     }
 }

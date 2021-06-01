@@ -2,15 +2,9 @@
 <?php
 
 /*
-    v26
+    v27
     [WIP]: Rifà stile
         [WIP]: Colore bottone login e di scelta livello adattato
-        [WIP]: default.html.php, account.html.php
-    [MAY]: Punteggio su messaggio di vittoria
-    [WIP]: Mostra il numero di blocchi ed il creatore su ogni livello
-    [WIP]: Ignora un eventuale "#" all'inizio del codice del livello
-    [WIP]: Mostra il codice della mappa quando viene completato il livello
-    [WIP]: Nome account sulle opzioni in modo tale da sapere se si è loggati
 */
 
 session_start();

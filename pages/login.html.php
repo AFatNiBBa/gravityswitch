@@ -1,7 +1,7 @@
 
 <?php
     //| Rimozione account scaduti
-    $db($query["del-scaduti"]);
+    $db("DELETE FROM utenti WHERE attivo = 0 AND TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP(), creazione)) > 3600");
 
     $nick = @$_POST["nick"];
     $user = @$_POST["user"];

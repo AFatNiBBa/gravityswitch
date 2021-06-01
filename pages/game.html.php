@@ -2,7 +2,7 @@
 <?php 
     if ($_PATH == "")
         if (!($_PATH = @$_GET["id"]))
-            return assemble("private/default");
+            return assemble("private/default", [ "mappe" => $query->tab_mappe ]);
     $_MSG["header"] = $_MSG["footer"] = false;
 
     function vector3($id)
@@ -188,6 +188,9 @@
                         <span id="tempo"></span>s
                     </span>
                     <br>
+                    Punti: <span id="punti" class="text-success">???</span> <br>
+                    Mappa: <a id="mappa" href="/?page=game/<?= $temp = htmlentities($_PATH) ?>">#<?= $temp ?></a>
+                    <br>
                 </span>
                 Clicca per continuare...
             </div>
@@ -224,6 +227,12 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <?php if($user = @$_SESSION["account"]["nick"]): ?>
+                    <a class="btn bg-white float-right" href="/?page=account">
+                        <i class="fad fa-user"></i>
+                        <?= $user ?>
+                    </a>
+                <?php endif ?>
                 <a class="btn btn-danger" href="/?page=main"> Home </a>
                 <a class="btn btn-warning" href="/?page=game"> Scelta livelli </a>
                 <button type="button" class="btn btn-primary" onclick='

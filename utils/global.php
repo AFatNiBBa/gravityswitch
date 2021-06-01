@@ -146,6 +146,12 @@ class £
         return $out;
     }
 
+    //| Inserisce un fragment ("http://blah.com#frag"); Se usato normalmente verrebbe appicciato alla fine dell'href del '<base>'
+    static function hash($frag)
+    {
+        return htmlspecialchars("javascript: void(window.location.hash = '') || void(window.location.hash = " . json_encode($frag) . ")");
+    }
+
     //| Stampa del codice javascript che porta alla pagina selezionata; Se non viene passato "$url" ricarica la pagina; Se viene passato '-1' porta alla precedente
     static function href($url = 0)
     {
@@ -212,7 +218,7 @@ class £
                         >
                     <?php endif ?>
                     <input
-                        <?php if($type == "date" && isset($placeholder)): // L'elemento è di tipo "date" solo quando viene cliccato, in questo modo è visibile il placeholder ?>
+                        <?php if($type == "date" && isset($placeholder)): # L'elemento è di tipo "date" solo quando viene cliccato, in questo modo è visibile il placeholder ?>
                             onblur="(this.type='text')"
                             onfocus="(this.type='date')"
                         <?php else: ?>

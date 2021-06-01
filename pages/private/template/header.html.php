@@ -97,6 +97,8 @@
                 <?php endif ?>
             </ul>
             <ul class="navbar-nav navbar-right">
+                &nbsp;
+                &nbsp;
                 <li class="nav-item active cursor-pointer">
                     <!-- Searchbar -->
                     <form action="/?" method="get">
