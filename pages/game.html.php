@@ -2,7 +2,7 @@
 <?php 
     if ($_PATH == "")
         if (!($_PATH = @$_GET["id"]))
-            return assemble("private/default", [ "mappe" => $query->tab_mappe ]);
+            return assemble("/private/default", [ "mappe" => $query->tab_mappe ]);
     $_MSG["header"] = $_MSG["footer"] = false;
 
     function vector3($id)

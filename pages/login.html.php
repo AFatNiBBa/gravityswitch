@@ -43,7 +43,7 @@
                                 £::alert("fad fa-bug", "Si è verificato un <b>errore</b> anomalo.", "danger"); # Errore anomalo
                             else if (
                                 !send(function() use($id) {
-                                    assemble("private/mail", [
+                                    assemble("/private/mail", [
                                         "link" => "{$_SERVER["HTTP_X_FORWARDED_PROTO"]}://{$_SERVER["HTTP_HOST"]}/?page=plain/db.php/confirm&data=" . urlencode(json_encode($id))
                                     ]);
                                 }, $user, "BigBlackDeath", "Conferma Email")

@@ -105,7 +105,7 @@
                 <span class="ml-5 pl-5">Amici:</span>
             <?php   
         }
-        else return assemble("private/error", [ "code" => 404 ]);
+        else return assemble("/private/error", [ "code" => 404 ]);
     }
 ?>
 

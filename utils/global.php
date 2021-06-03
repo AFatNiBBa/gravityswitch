@@ -248,7 +248,11 @@ function assemble($path, array $args = [], $ext = ".html.php")
 {
     global $db;                                             # Variabili accessibili a tutte le pagine
     static $_MSG = [];                                      # Variabile utilizzabile per scambiare informazioni tra le pagine; La parola 'static' la crea la prima volta che serve ed usa la stessa instanza tutte le altre volte
-    $file = __DIR__ . "/../pages/";
+
+    $file = $path[0] == "/"                                 # Se il percorso inizia con "/" allora parte da dentro a "pages", altrimenti dalla cartella corrente
+    ? __DIR__ . "/../pages"
+    : dirname(debug_backtrace()[0]["file"]) . "/";          # Cartella del file che chiava la funzione**-
+
     $dirs = preg_split("~[\\\\/]~", $path);
     for ($i = 0, $l = count($dirs); $i < $l; $i++)
     {

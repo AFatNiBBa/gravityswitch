@@ -2,9 +2,10 @@
 <?php
 
 /*
-    v27
+    v28
     [WIP]: Rifà stile
-        [WIP]: Colore bottone login e di scelta livello adattato
+        [WIP]: Colore bottone login adattato
+        [/!\]: table1/downloads/SbUiKitPro
 */
 
 session_start();
@@ -37,9 +38,9 @@ try
     
     //| Reindirizzamento; Mette il template se non è in "plain/" o c'è ma non esiste; Da errore se prova ad accedere a "private/"
     if (preg_match("/^private\/.+/", $page))
-        assemble("private/template/base", [ "page" => "private/error", "code" => 404 ]);
-    else if (!preg_match("/^plain\/.+/", $page) || !assemble($page, [], ""))
-        assemble("private/template/base", [ "page" => $page ]);
+        assemble("/private/template/base", [ "page" => "private/error", "code" => 404 ]);
+    else if (!preg_match("/^plain\/.+/", $page) || !assemble("/$page", [], ""))
+        assemble("/private/template/base", [ "page" => $page ]);
 }
 catch (Exception $e)
 {
