@@ -32,11 +32,11 @@
 
     .grow {
         display: grid;
-        grid-template-columns: 1fr;
-        row-gap: 30px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
     }
 
-    .grow .item {
+    .grow > * {
         /* Elemento che si ingrandisce con l'hover */
         padding: 10px 30px 10px 10px;
         overflow: hidden;
@@ -47,7 +47,7 @@
         background-color: #fff;
     }
 
-    .grow .item:hover {
+    .grow > *:hover {
         transform: scale(1.1);
         box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);
     }

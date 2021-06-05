@@ -166,7 +166,7 @@
             inner.removeClass("pl-5");
         });
 
-        $(".item.bg-warning")[0].scrollIntoView({
+        $("#selected")[0].scrollIntoView({
             behavior: "smooth",     // Anima il movimento
             block: "center"         // Dove sarà dopo lo scroll l'elemento
         });
@@ -174,25 +174,31 @@
 </script>
 
 <?php if(!$search): ?>
-    <div class="grow w-50 mx-auto">
-        Livelli:
-        <?php foreach($db("SELECT * FROM ($query->tab_mappe) AS mappe WHERE creatore <=> ?", [ $id ]) as $row): ?>
-            <div class="item <?= $row["id"] == $mappa ? "bg-warning" : "" ?>">
-                <a href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>"> #<?= htmlspecialchars($row["id"]) ?> </a>
-                <br>
-                <?= htmlspecialchars($row["blocchi"]) ?> blocchi
-            </div>
-        <?php endforeach ?>
+    <div class="w-75 mx-auto">
+        <br> Livelli: <br> <br>
+        <div class="grow">
+            <?php foreach($db("SELECT * FROM ($query->tab_mappe) AS mappe WHERE creatore <=> ?", [ $id ]) as $row): ?>
+                <div <?= $row["id"] == $mappa ? 'id="selected" class="bg-warning"' : "" ?>>
+                    <a href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>"> #<?= htmlspecialchars($row["id"]) ?> </a>
+                    <br>
+                    <?= htmlspecialchars($row["blocchi"]) ?> blocchi
+                </div>
+            <?php endforeach ?>
+        </div>
 
-        <?php if($id) foreach($db("SELECT * FROM ($query->tab_partite) AS partite WHERE utente = ? ORDER BY creazione DESC", [ $id ]) as $row): ?>
-            Partite:
-            <div class="item text-monospace">
-                morti: <?= $row["morti"] ?> <br>
-                salti: <?= $row["salti"] ?> <br>
-                tempo: <?= $row["tempo"] ?>s <br>
-                punti: <?= round($row["punteggio"] * 10000) ?>
-                <a href="/?page=account&mappa=<?= htmlspecialchars(urlencode($row["mappa"])) ?>"> #<?= htmlspecialchars($row["mappa"]) ?> </a>
+        <?php if($id): ?>
+            <br> Partite: <br> <br>
+            <div class="grow">
+                <?php foreach($db("SELECT * FROM ($query->tab_partite) AS partite WHERE utente = ? ORDER BY creazione DESC", [ $id ]) as $row): ?>
+                    <div class="text-monospace">
+                        morti: <?= $row["morti"] ?> <br>
+                        salti: <?= $row["salti"] ?> <br>
+                        tempo: <?= $row["tempo"] ?>s <br>
+                        punti: <?= round($row["punteggio"] * 10000) ?>
+                        <a href="/?page=account&mappa=<?= htmlspecialchars(urlencode($row["mappa"])) ?>"> #<?= htmlspecialchars($row["mappa"]) ?> </a>
+                    </div>
+                <?php endforeach ?>        
             </div>
-        <?php endforeach ?>
+        <?php endif ?>
     </div>
 <?php endif ?>
