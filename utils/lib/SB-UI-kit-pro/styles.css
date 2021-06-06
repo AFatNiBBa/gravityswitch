@@ -17720,6 +17720,9 @@ footer {
 .lift:hover {
   transform: translateY(-0.3333333333rem);
   box-shadow: 0 0.5rem 2rem 0 rgba(31, 45, 65, 0.25);
+
+  /* EDITATO */
+  z-index: 5;
 }
 .lift:active {
   transform: none;

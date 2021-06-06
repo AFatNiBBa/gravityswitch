@@ -8,22 +8,29 @@
         place-items: center;
         color: white;
     }
-</style>
 
-<script>
-    $(function() {
-        const temp = [...$(".out-left, .out-right")];
-        Manager.sequence([
-            [
-                [ temp[0], 0, { translateX: "-1000" } ],
-                [ temp[1], 0, { translateX: "1000" } ],
-            ],
-            [
-                [ temp, 1000, , new Manager.Lock({ translateX: "0" }) ]
-            ]
-        ]);
-    });
-</script>
+    @keyframes onload {
+        from {
+            transform: translateX(calc(100% * var(--direction)));
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    .out-left {
+        --direction: -1;
+    }
+
+    .out-right {
+        --direction: 1;
+    }
+
+    .out-left, .out-right {
+        animation: onload .75s cubic-bezier(0.175,0.885,0.32,1.275) .25s 1 forwards;
+    }
+</style>
 
 <!-- Titolo -->
 <div id="blob" class="bg-full">

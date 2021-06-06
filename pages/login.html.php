@@ -18,7 +18,7 @@
 </style>
 
 <!-- Form -->
-<div class="container w-25 mt-5" style="min-width: 440px">
+<div class="container w-25 my-15" style="min-width: 440px">
     <form enctype="multipart/form-data" action="/?page=login<?= $register ? "/register" : "" ?>" method="post">
         <center>
             <!-- Logo -->

@@ -6,6 +6,7 @@
 ?>
 
 <!-- Debug HTML -->
+
 <main <?= £::put([1,2,3]) ?>>
     <section class="pt-10">
         <div class="container">

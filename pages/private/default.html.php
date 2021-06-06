@@ -13,15 +13,23 @@
     <div class="grow">
         <?php foreach($db("SELECT * FROM ($mappe) AS mappe WHERE JSON_EXTRACT(stile, '$.rnd') <> true") as $row): ?>
             <div>
-                <a href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>"> #<?= htmlspecialchars($row["id"]) ?> </a>
-                <br>
-                <?= htmlspecialchars($row["blocchi"]) ?> blocchi
+                <a class="card-link d-block" href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>">
+                    <span class="text-primary">
+                        #<?= htmlspecialchars($row["id"]) ?>
+                    </span>
+                    <br>
+                    <span class="text-black">
+                        <?= htmlspecialchars($row["blocchi"]) ?> blocchi
+                    </span>
+                </a>
             </div>
         <?php endforeach ?>
         <div>
-            <a href="/?page=game/rnd"> Rnd </a>
-            <br>
-            ? blocchi
+            <a class="card-link d-block" href="/?page=game/rnd">
+                <span class="text-primary"> Rnd </span>
+                <br>
+                ? blocchi
+            </a>
         </div>
     </div>
 </div>

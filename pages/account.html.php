@@ -1,33 +1,33 @@
 
 <?php
     function stats($user)
+    {
+        //| Visualizza il numero di livelli creati e di completamenti di un utente
+        show([
+            [ "Livelli Creati:", $user["generati"], "info" ],
+            [ "Partite Giocate:", $user["partite"], "info" ],
+            [ "Punteggio:", round($user["punteggio"] * 10000), "success" ]
+        ]);
+    }
+
+    function show($opts)
 	{
-		//| Visualizza il numero di livelli creati e di completamenti di un utente
+		//| Visualizza una serie di dati
 		?>
-			<table style="border-collapse: separate; border-spacing: 1em 5px;">
-				<tr>
-					<td> Livelli Creati: </td>
-					<td class="rounded bg-warning px-2">
-						<?= htmlspecialchars($user["generati"]) ?>
-					</td>
-				</tr>
-				<tr>
-					<td> Partite Giocate: </td>
-					<td class="rounded bg-danger text-white px-2">
-						<?= htmlspecialchars($user["partite"]) ?>
-					</td>
-				</tr>
-                <tr>
-					<td> Punteggio: </td>
-					<td class="rounded bg-info text-white px-2">
-						<?= htmlspecialchars(round($user["punteggio"] * 10000)) ?>
-					</td>
-				</tr>
+			<table class="w-100 text-left" style="border-collapse: separate; border-spacing: 1em 5px;">
+                <?php foreach($opts as $e): ?>
+                    <tr>
+                        <td> <?= htmlspecialchars($e[0]) ?> </td>
+                        <td class="rounded px-2 bg-dark text-<?= $e[2] ?? "primary" ?>">
+                            <?= htmlspecialchars($e[1]) ?>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
 			</table>
 		<?php
 	}
 
-    function friend($user)
+    function friend($user, $full = false)
     {
         //| Visualizzazione bottoni amici
         static $config = [
@@ -60,18 +60,16 @@
             ]]
         ];
         
-        if (@$_SESSION["account"]["id"] != $user["id"])
+        $out = $config[$user["amico"]];
+        $code = htmlspecialchars(urlencode(json_encode($user["id"])));
+        foreach($out as $e)
         {
-            $out = $config[$user["amico"]];
-            $code = htmlspecialchars(urlencode(json_encode($user["id"])));
-            foreach($out as $e)
-            {
-                ?>
-                    <a href="/?page=plain/db.php/<?= $e[0] ?>&data=<?= $code ?>" class="btn btn-<?= $e[1] ?>">
-                        <i class="<?= $e[2] ?>"></i>
-                    </a>
-                <?php
-            }
+            ?>
+                <a class="m-2 <?= $full ? "w-75" : "" ?> btn btn-<?= $e[1] ?>" href="/?page=plain/db.php/<?= $e[0] ?>&data=<?= $code ?>">
+                    <i class="<?= $e[2] ?>"></i>
+                </a>
+                <?php if($full) echo "<br>" ?>
+            <?php
         }
     }
 
@@ -97,11 +95,12 @@
                         <?= $user["nick"] ?>
                     </span>
                     <br>
-                    <?php stats($user) ?>
+                    <div class="w-25">
+                        <?php stats($user) ?>
+                    </div>
                     <br>
-                    <?php if($loggato) friend($user) ?>
+                    <?php if($loggato && $loggato != $id) friend($user) ?>
                 </div>
-                <span class="ml-5 pl-5">Amici:</span>
             <?php   
         }
         else return assemble("/private/error", [ "code" => 404 ]);
@@ -117,96 +116,131 @@
     ];
 ?>
 
-<style>
-    #friend {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-row-gap: 70px;
-    }
-</style>
+<script>
+    $(() => {
+        $("#selected")[0]?.scrollIntoView?.({
+            behavior: "smooth",     // Anima il movimento
+            block: "center"         // Dove sarà l'elemento dopo lo scroll
+        });
+    });
+</script>
 
 <br>
 <?php if ($id): ?>
-    <div id="friend" class="px-3 py-5 mt-5 mx-5">
+    <div class="container">
+        <h3 class="mb-3">
+            <?php if($user): ?>
+                Amici:
+            <?php else: ?>
+                Profili ricercati:
+            <?php endif ?>
+        </h3>
         <?php if (count($out)): ?>
-            <?php foreach($out as $row): ?>
-                <!-- Card -->
-                <div class="card mx-auto r-outer" style="width: 18rem;">
-                    <img class="card-img-top" src="utils/res/i/circles.svg">
-                    <div class="card-body r-inner">
-                        <h5 class="card-title"> <?= $row["nick"] ?> </h5>
-                        <p class="card-text">
-                            <?php stats($row) ?>
-                        </p>
-                        <a href="/?page=account&id=<?= htmlspecialchars(urlencode(json_encode($row["id"]))) ?>" class="btn btn-primary">
-                            Profilo
-                        </a>
-                        <?php if($loggato) friend($row) ?>
-                    </div>
+            <?php for($i = 0, $l = count($out), $sec = 3; $i < $l; $i += $sec): ?>
+                <div class="row mb-5">
+                    <?php for($k = $i; $k < $i + $sec && $k < $l; $k++): $row = $out[$k]; ?>
+                        <div class="col-lg-4 mb-5">
+                            <div class="card border-top border-top-lg border-primary lift text-center o-visible h-100">
+                                <div class="card-body">
+                                    <!-- Icona -->
+                                    <div class="icon-stack icon-stack-xl bg-primary-soft text-primary mb-4 mt-n5 z-1 shadow"><i class="fad fa-user"></i></div>
+                                    <?php if($loggato && $loggato != $row["id"]): ?>
+                                        <!-- Interazioni -->
+                                        <div class="float-right">
+                                            <div class="dropright position-absolute" style="right: 10px">
+                                                <div class="btn" data-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </div>
+                                                <div class="dropdown-menu text-center">
+                                                    <form>
+                                                        <?php friend($row, true) ?>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif ?>
+                                    <!-- Nome -->
+                                    <h5><?= htmlspecialchars($row["nick"]) ?></h5>
+                                    <!-- Statistiche -->
+                                    <div class="card-text">
+                                        <?php stats($row) ?>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="/?page=account&id=<?= htmlspecialchars(urlencode(json_encode($row["id"]))) ?>" class="card-link text-primary font-weight-bold d-inline-flex align-items-center">
+                                        Profilo<i class="fas fa-arrow-right text-xs ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endfor ?>
                 </div>
-            <?php endforeach ?>
+            <?php endfor ?>
         <?php else: ?>
             Non sono stati trovati account<?php if (!$search) echo " amici" ?>.
         <?php endif ?>
     </div>
 <?php endif ?>
 
-<script>
-    function rotate(outer, inner, angle = 0, os = 1, is = 1) {
-        if (inner instanceof jQuery) inner = Array.from(inner);
-        const opts = { duration: 1000, elasticity: 300 }
-        anime.remove(inner);
-        anime.remove(outer);
-        anime({ targets: inner, rotateZ: -angle, scale: is });
-        anime({ targets: outer, rotateZ: angle, scale: os });
-    }
-
-    $(() => {
-        $(".r-outer").on('mouseenter', function() {
-            const inner = $(this).find(".r-inner");
-            rotate(this, inner, 90, 1.5, .8);
-            inner.addClass("pl-5");
-        });
-
-        $(".r-outer").on('mouseleave', function() {
-            const inner = $(this).find(".r-inner");
-            rotate(this, inner, 0);
-            inner.removeClass("pl-5");
-        });
-
-        $("#selected")[0].scrollIntoView({
-            behavior: "smooth",     // Anima il movimento
-            block: "center"         // Dove sarà dopo lo scroll l'elemento
-        });
-    });
-</script>
-
 <?php if(!$search): ?>
-    <div class="w-75 mx-auto">
-        <br> Livelli: <br> <br>
-        <div class="grow">
-            <?php foreach($db("SELECT * FROM ($query->tab_mappe) AS mappe WHERE creatore <=> ?", [ $id ]) as $row): ?>
-                <div <?= $row["id"] == $mappa ? 'id="selected" class="bg-warning"' : "" ?>>
-                    <a href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>"> #<?= htmlspecialchars($row["id"]) ?> </a>
+<!-- Livelli -->
+<div class="container mb-5">
+    <h3 class="mb-3"> Livelli: </h3>
+    <div class="grow">
+        <?php foreach($db("SELECT * FROM ($query->tab_mappe) AS mappe WHERE creatore <=> ?", [ $id ]) as $row): ?>
+            <div <?= $row["id"] == $mappa ? 'id="selected" class="bg-warning"' : "" ?>>
+                <a class="card-link d-block" href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>">
+                    <span class="text-primary">
+                        #<?= htmlspecialchars($row["id"]) ?>
+                    </span>
                     <br>
-                    <?= htmlspecialchars($row["blocchi"]) ?> blocchi
-                </div>
-            <?php endforeach ?>
-        </div>
-
-        <?php if($id): ?>
-            <br> Partite: <br> <br>
-            <div class="grow">
-                <?php foreach($db("SELECT * FROM ($query->tab_partite) AS partite WHERE utente = ? ORDER BY creazione DESC", [ $id ]) as $row): ?>
-                    <div class="text-monospace">
-                        morti: <?= $row["morti"] ?> <br>
-                        salti: <?= $row["salti"] ?> <br>
-                        tempo: <?= $row["tempo"] ?>s <br>
-                        punti: <?= round($row["punteggio"] * 10000) ?>
-                        <a href="/?page=account&mappa=<?= htmlspecialchars(urlencode($row["mappa"])) ?>"> #<?= htmlspecialchars($row["mappa"]) ?> </a>
-                    </div>
-                <?php endforeach ?>        
+                    <span class="text-black">
+                        <?= htmlspecialchars($row["blocchi"]) ?> blocchi
+                    </span>
+                </a>
             </div>
+        <?php endforeach ?>
+    </div>
+</div>
+
+<!-- Partite -->
+<?php if($id): $out = $db("SELECT * FROM ($query->tab_partite) AS partite WHERE utente = ? ORDER BY creazione DESC", [ $id ]) ?>
+    <div class="container">
+        <h3 class="mb-3"> Partite: </h3>
+        <?php if (count($out)): ?>
+            <?php for($i = 0, $l = count($out), $sec = 3; $i < $l; $i += $sec): ?>
+                <div class="row mb-5">
+                    <?php for($k = $i; $k < $i + $sec && $k < $l; $k++): $row = $out[$k]; ?>
+                        <div class="col-lg-4 mb-5">
+                            <div class="card border-top border-top-lg border-secondary lift text-center o-visible h-100">
+                                <div class="card-body">
+                                    <!-- Icona -->
+                                    <div class="icon-stack icon-stack-xl bg-secondary-soft text-secondary mb-4 mt-n5 z-1 shadow"><i class="fad fa-game-board"></i></div>
+                                    <!-- Nome -->
+                                    <h5>#<?= htmlspecialchars($row["mappa"]) ?></h5>
+                                    <!-- Statistiche -->
+                                    <div class="card-text">
+                                        <?php show([
+                                            [ "Morti:", $row["morti"], "danger" ],
+                                            [ "Salti:", $row["salti"], "warning" ],
+                                            [ "Tempo:", $row["tempo"], "warning" ],
+                                            [ "Punti:", round($row["punteggio"] * 10000), "success" ]
+                                        ]) ?>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="/?page=account&mappa=<?= htmlspecialchars(urlencode($row["mappa"])) ?>" class="card-link text-secondary font-weight-bold d-inline-flex align-items-center">
+                                        Livello<i class="fas fa-arrow-right text-xs ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endfor ?>
+                </div>
+            <?php endfor ?>
+        <?php else: ?>
+            Non sono state trovate partite.
         <?php endif ?>
     </div>
+<?php endif ?>
 <?php endif ?>

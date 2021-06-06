@@ -3,11 +3,7 @@
 
 /*
     v29
-    [MAY]: Mettere three.js, anime.js e game.js solo su "game.html.php"
-        [WIP]: Animazione homepage che non utilizza ste robe
-    [WIP]: Rimuovi immagini non utilizzate e prova ad utilizzarle
-    [WIP]: Rifà stile account (partite > celle > "debug.html.php")
-    [/!\]: Cancella cache cloudflare
+    Fatto.
 */
 
 session_start();

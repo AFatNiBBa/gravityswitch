@@ -20,9 +20,15 @@
 
 <!-- Librerie della pagina -->
 <div>
-    <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>    <!-- OrbitControls -->
-    <script src="http://unpkg.com/three-spritetext"></script>                           <!-- Text Sprite -->
-    <script src="utils/lib/custom/gravity-switch.js"></script>                         <!-- Nucleo del gioco -->
+    <!-- Three.js --> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>   <!-- Anime.js -->
+    <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>            <!-- OrbitControls -->
+    <script src="http://unpkg.com/three-spritetext"></script>                                   <!-- Text Sprite -->
+
+    <!-- Personalizzato -->
+    <script src="utils/lib/game.js"></script>                                                   <!-- Manager3D -->
+    <script src="utils/lib/custom/gravity-switch.js"></script>                                  <!-- Nucleo del gioco -->
 </div>
 
 <!-- Generazione ambiente di gioco -->
@@ -182,14 +188,14 @@
             </div>
             <div class="modal-body">
                 <span id="stats" class="d-none text-monospace">
-                    Salti: <span id="salti" class="text-info"></span> <br>
-                    Morti: <span id="morti" class="text-info"></span> <br>
-                    Tempo: <span class="text-info">
+                    Salti: <span id="salti" class="text-primary"></span> <br>
+                    Morti: <span id="morti" class="text-primary"></span> <br>
+                    Tempo: <span class="text-primary">
                         <span id="tempo"></span>s
                     </span>
                     <br>
                     Punti: <span id="punti" class="text-success">???</span> <br>
-                    Mappa: <a id="mappa" href="/?page=game/<?= $temp = htmlentities($_PATH) ?>">#<?= $temp ?></a>
+                    Mappa: <a id="mappa" class="text-secondary" href="/?page=game/<?= $temp = htmlentities($_PATH) ?>">#<?= $temp ?></a>
                     <br>
                 </span>
                 Clicca per continuare...

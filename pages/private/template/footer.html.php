@@ -65,7 +65,7 @@
                         <div class="text-uppercase-expanded text-xs mb-4">Informazioni</div>
                         <ul class="list-unstyled mb-0">
                             <li>Fatto da Sean Alunni</li>
-                            <li>ITIS Franchetti Salviani</li>
+                            <li class="text-nowrap">ITIS Franchetti Salviani</li>
                             <li>5<sup>a</sup>C Informatica</li>
                         </ul>
                     </div>
