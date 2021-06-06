@@ -26,7 +26,7 @@
 	</head>
 	<body>
 		<?php if ($_MSG["header"] ?? true) assemble("header") ?>
-		<div id="root">
+		<div id="root" class="bg-light">
 			<?= $out ?>
 		</div>
 		<?php if ($_MSG["footer"] ?? true) assemble("footer") ?>

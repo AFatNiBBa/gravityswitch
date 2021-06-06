@@ -6,6 +6,7 @@
 
         display: grid;
         place-items: center;
+        color: white;
     }
 </style>
 

@@ -1,6 +1,5 @@
 
 <?php
-
     function stats($user)
 	{
 		//| Visualizza il numero di livelli creati e di completamenti di un utente
@@ -107,6 +106,15 @@
         }
         else return assemble("/private/error", [ "code" => 404 ]);
     }
+
+    $_MSG["title"] = [
+        "Account",
+        $search
+        ? "Profili che corrispondono ai criteri di ricerca"
+        : ($loggato == $id
+            ? "Profilo del proprio utente"
+            : "Profilo dell'utente selezionato")
+    ];
 ?>
 
 <style>

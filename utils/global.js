@@ -26,12 +26,9 @@ class DB {
 
 //| Definisce un getter che si "autodistrugge" sugli elementi HTML che permette di accedere all'oggetto fornito attraverso l'attributo "data-json"
 HTMLElement.prototype.__defineGetter__("data", function() {
-    const data = JSON.parse(this.getAttribute("data-json"));
-    const { __proto__: p } = this;
-    Object.setPrototypeOf(this, null);
-    this.data = data;
-    Object.setPrototypeOf(this, p);
-    return data;
+    const value = JSON.parse(this.getAttribute("data-json"));
+    Object.defineProperty(this, "data", { value });
+    return value;
 });
 
 //| Definisce una funzione per modificare un valore intermedio e restituirlo senza dover immagazzinarlo in una variabile; La funzione è definita in modo da non essere enumerabile , e quindi non venir selezionata a caso da altre funzioni

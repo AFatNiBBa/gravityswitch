@@ -1,4 +1,6 @@
 
+<?php $_MSG["title"] = [ "Livelli Standard", "Livelli fatti a mano dallo sviluppatore del gioco!" ] ?>
+
 <br>
 <div class="w-75 mx-auto">
     <form action="/?">
