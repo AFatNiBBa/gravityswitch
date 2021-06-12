@@ -2,6 +2,12 @@
 <?php
     # Debug PHP
     
+    if ($eval = @$_POST["eval"])
+    {
+        $_MSG["title"] = [ "Eval", "Codice inserito dall'utente: SOLO DIMOSTRATIVO" ];
+        eval("?>$eval");
+        return;
+    }
 ?>
 
 <!-- Debug HTML -->
@@ -33,13 +39,24 @@
                     }
                 )
             ).setSize(window.innerWidth, window.innerHeight);
+
+            window.area.on("keydown", (self, e) => {
+                if(e.key.toLowerCase() == "enter" && e.ctrlKey)
+                {
+                    const temp = self.getTextArea();
+                    temp.value = self.getValue();
+                    temp.parentElement.submit();
+                }
+            });
         }
     </script>
 
     <body onload="load()">
-        <textarea>
-            <?= htmlspecialchars(file_get_contents($path)) ?>
-        </textarea>
+        <form method="post">
+            <textarea name="eval">
+                <?= htmlspecialchars(file_get_contents($path)) ?>
+            </textarea>
+        </form>
     </body>
 <?php elseif(is_dir($path)): $_MSG["title"] = ["Cartella", "File e Cartelle contenute nella cartella selezionata"] ?>
     <!-- Visualizzazione Cartella -->
