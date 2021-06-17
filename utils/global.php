@@ -135,6 +135,55 @@ class Cacher
     }
 }
 
+//| Interfaccia migliorata per l'ob (output buffer) con aggiunti alcuni metodi
+class ob
+{
+    //| Output attesi al momento; Settandolo si rischia di rompere tutto
+    public static $length = 0;
+
+    //| Richiede un nuovo output
+    static function wait() {
+        ob_start();
+        return ++self::$length;
+    }
+
+    //| Manda un output al livello specificato (default 1); Si può accedere ai livelli al contrario utilizzando i numeri negativi
+    static function send($val = "", $l = 1) {
+        $temp = [];
+        
+        # Accumulo
+        for ($i = ($l > 0 ? $l - 1 : self::$length + $l); $i < self::$length; $i++)
+            $temp[] = ob_get_clean();
+
+        # Output
+        echo $val . end($temp);
+
+        # Riordinamento
+        for ($i = count($temp) - 2; $i >= 0; $i--)
+        {
+            ob_start();
+            echo $temp[$i];
+        }
+        return --self::$length;
+    }
+
+    //| Genera una funzione che avrà come output quello di "$f" concatenato a quello dell'echo
+    public static function func($f)
+    {
+        return function(...$args) use($f) {
+            ob_start();
+            @$f(...$args);
+            return ob_get_clean();
+        };
+    }
+
+    //| Rende le funzioni di base dell'output buffer chiamabili da qui
+    public static function __callStatic($name, $args)
+    {
+        return ("ob_$name")(...$args);
+    }
+}
+
 //| Contiene funzioni per generare parti molto utilizzate di codice
 class £
 {
@@ -244,25 +293,25 @@ class £
 }
 
 //| Carica il file passandogli certe variabili; Se un file è in mezzo al percorso viene comunque richiamato e può poi comportarsi come nodo-cartella avendo accesso a "$dirs" e "$i"
-function assemble($path, array $args = [], $ext = ".html.php")
+function assemble($path, array $_ARGS = [], $ext = ".html.php")
 {
     global $db;                                             # Variabili accessibili a tutte le pagine
     static $_MSG = [];                                      # Variabile utilizzabile per scambiare informazioni tra le pagine; La parola 'static' la crea la prima volta che serve ed usa la stessa instanza tutte le altre volte
 
-    $file = $path[0] == "/"                                 # Se il percorso inizia con "/" allora parte da dentro a "pages", altrimenti dalla cartella corrente
+    $_FILE = $path[0] == "/"                                # Se il percorso inizia con "/" allora parte da dentro a "pages", altrimenti dalla cartella corrente
     ? __DIR__ . "/../pages"
     : dirname(debug_backtrace()[0]["file"]) . "/";          # Cartella del file che chiava la funzione**-
 
     $dirs = preg_split("~[\\\\/]~", $path);
     for ($i = 0, $l = count($dirs); $i < $l; $i++)
     {
-        if (is_dir($current = $file . $dirs[$i]))
+        if (is_dir($current = $_FILE . $dirs[$i]))
         {
             //| Cartella
-            $file = $current . "/";
+            $_FILE = $current . "/";
             if ($i == $l - 1) $dirs[$l++] = "main";
         }
-        else if (!file_exists($file = $current . $ext))
+        else if (!file_exists($_FILE = $current . $ext))
             //| Non trovato
             return false;
         else
@@ -270,33 +319,28 @@ function assemble($path, array $args = [], $ext = ".html.php")
             //| File
             for ($_PATH = ""; ++$i < $l;)                   # Creazione variabile speciale "$_PATH" in cui verrà contenuto il percorso successivo
                 $_PATH .= ($_PATH ? "/" : "") . $dirs[$i];
-            unset($path, $ext, $dirs, $i, $l, $current);    # Eliminazione variabili definite in funzione
-            extract($args);                                 # Definizione parametri personalizzati
-            include $file;                                  # Esecuzione "$file"
-            return true;
+            unset($path, $ext, $dirs, $i, $l, $current);    # Eliminazione variabili definite in funzione (Tranne "$_PATH", "$_FILE", "$_ARGS", "$_MSG" e "$db")
+            extract($_ARGS);                                # Definizione parametri personalizzati
+            return [ include $_FILE ];                      # Esecuzione "$_FILE"
         }
     }
     return false;
 }
 
-//| Genera una funzione che avrà come output quello di "$f" concatenato a quello dell'echo
-function ob_function($f)
+//| Ottiene il percorso di sottodomini corrente
+function hostpath($offset = 0)
 {
-    return function(...$args) use($f) {
-        ob_start();
-        $out = @$f(...$args);
-        if (!is_string($out)) $out = "";
-        $out .= ob_get_contents();
-        ob_end_clean();
-        return $out;
-    };
+    $out = array_reverse(explode(".", $_SERVER["HTTP_HOST"]));
+    return $offset
+    ? array_slice($out, $offset)
+    : $out;
 }
 
-//| Come "var_dump()" ma ben formattato ed escapa i caratteri speciali
+//| Come "var_dump()" ma ben formattato ed escapa i caratteri speciali (Solo quando non c'è "php_xdebug.dll")
 function dump($obj)
 {
     echo "<pre>";
-    echo htmlspecialchars(ob_function("var_dump")($obj));
+    echo htmlspecialchars(ob::func("var_dump")($obj));
     echo "</pre>";
     return $obj;
 }
@@ -316,9 +360,7 @@ function send($f, $to, $from, $sub, $files = [])
         $mail->addStringAttachment($data, $name);
 
     //| Contenuto
-    ob_start();
-    $f($mail);
-    $mail->Body = ob_get_contents();
-    ob_end_clean();
+    $mail->Body = ob::func($f)($mail);
+
     return $mail->send();
 }

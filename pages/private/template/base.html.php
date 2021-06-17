@@ -1,8 +1,8 @@
 
 <?php
-	$out = ob_function(function() use($page, $args) {
-		$args["query"] = include __DIR__ . "/../../../utils/lib/custom/query.php";
-		if (!assemble("/$page", $args))
+	$out = ob::func(function() use($page, $_ARGS) {
+		$_ARGS["query"] = include __DIR__ . "/../../../utils/lib/custom/query.php";
+		if (!assemble("/$page", $_ARGS))
 			assemble("../error", [ "code" => 404 ]);
 	})();
 
