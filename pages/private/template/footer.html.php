@@ -58,7 +58,7 @@
                         <ul class="list-unstyled mb-0">
                             <li><a class="mb-2" href="/?page=debug">Debug</a></li>
                             <li><a class="mb-2" href="/?page=private/error">Errore</a></li>
-                            <li><a href="https://s534.altervista.org/phpmyadmin/import.php#PMAURL-1:db_structure.php?db=my_dump&table=&server=1&target=&token=658470f6f693bef87e730f9404f00b50">Database</a></li>
+                            <li><a href="<?= $GLOBALS["localhost"] ? "/phpmyadmin" : "https://s534.altervista.org/phpmyadmin/import.php#PMAURL-1:db_structure.php?db=my_dump&table=&server=1&target=&token=658470f6f693bef87e730f9404f00b50" ?>">Database</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-3 col-md-6">
