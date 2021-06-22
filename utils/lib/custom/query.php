@@ -20,7 +20,7 @@ $out->tab_partite = <<<SQL
 SQL;
 
 $out->tab_utenti = <<<SQL
-    -- Tabella degli utenti con aggiunto il numero delle partite completate, dei livelli creati, lo stato di amicizia con l'utente loggato (parametro 1) ed il punteggio medio
+    -- Tabella degli utenti attivi con aggiunto il numero delle partite completate, dei livelli creati, lo stato di amicizia con l'utente loggato (parametro 1) ed il punteggio medio
     SELECT *, (
         -- Partite completate
         SELECT COUNT(*)
@@ -33,7 +33,8 @@ $out->tab_utenti = <<<SQL
         WHERE mappe.creatore = utenti.id
     ) AS generati, (
         -- Stato di attivazione dell'eventuale amicizia, se non vi è mette 'NULL'
-        SELECT CASE
+        SELECT
+            CASE
                 WHEN amicizie.attivo = 0 AND amicizie.a = (@logged := ?) THEN "mandata"
                 WHEN amicizie.attivo = 0 AND amicizie.b = @logged THEN "ricevuta"
                 ELSE "attivo"
@@ -51,6 +52,7 @@ $out->tab_utenti = <<<SQL
         WHERE partite.utente = utenti.id
     ) AS punteggio
     FROM utenti
+    WHERE utenti.attivo = 1
 SQL;
 
 $out->sel_amici = <<<SQL

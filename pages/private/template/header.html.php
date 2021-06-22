@@ -27,7 +27,7 @@
                     <!-- Loggato -->
                     <li class="nav-item active cursor-pointer">
                         <a class="nav-link" href="/?page=plain/db.php/logout">
-                            <i class="fad fa-user-slash"></i>
+                            <i class="fad fa-user-slash text-danger"></i>
                             Logout
                         </a>
                     </li>
@@ -35,13 +35,13 @@
                     <!-- Non loggato -->
                     <li class="nav-item active cursor-pointer">
                         <a class="nav-link" href="/?page=login">
-                            <i class="fad fa-sign-in-alt"></i>
+                            <i class="fad fa-sign-in-alt text-info"></i>
                             Login
                         </a>
                     </li>
                     <li class="nav-item active cursor-pointer">
                         <a class="nav-link" href="/?page=login/register">
-                            <i class="fad fa-user-plus"></i>
+                            <i class="fad fa-user-plus text-success"></i>
                             Registrazione
                         </a>
                     </li>

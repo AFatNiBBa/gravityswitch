@@ -64,8 +64,14 @@ class Cacher
 
     function int($sql, $args = [])
     {
-        //| Restituisce il valore della prima colonna della prima riga come numero intero
-        return intval($this($sql, $args, PDO::FETCH_COLUMN, false)[0]);
+        //| Come "(new Cacher)->string()" ma l'output è convertito in intero
+        return intval($this->string($sql, $args));
+    }
+
+    function string($sql, $args = [])
+    {
+        //| Restituisce il valore della prima colonna della prima riga
+        return $this($sql, $args, PDO::FETCH_COLUMN, false)[0];
     }
 
     function apply($table)

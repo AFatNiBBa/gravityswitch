@@ -18,8 +18,8 @@
 </style>
 
 <!-- Form -->
-<div class="container w-25 my-15" style="min-width: 440px">
-    <form enctype="multipart/form-data" action="/?page=login<?= $register ? "/register" : "" ?>" method="post">
+<div class="container w-25 my-15" style="min-width: 530px">
+    <form method="post">
         <center>
             <!-- Logo -->
             <img src="utils/res/logo.png" style="width: 60px; height: 60px; position: relative; bottom: 10px;">
@@ -37,18 +37,46 @@
                             £::alert("fad fa-user-friends", "Utente <b>già registrato</b>.", "warning"); # Utente già registrato
                         else
                         {
-                            //| Successo
-                            $id = uniqid();
-                            if (!$db("INSERT INTO utenti (id, nick, email, pass, creazione, attivo) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP(), 0)", [ $id, $nick, $user, password_hash($pass, PASSWORD_DEFAULT) ]))
-                                £::alert("fad fa-bug", "Si è verificato un <b>errore</b> anomalo.", "danger"); # Errore anomalo
-                            else if (
-                                !send(function() use($id) {
-                                    assemble("/private/mail", [
-                                        "link" => "{$_SERVER["HTTP_X_FORWARDED_PROTO"]}://{$_SERVER["HTTP_HOST"]}/?page=plain/db.php/confirm&data=" . urlencode(json_encode($id))
-                                    ]);
-                                }, $user, "BigBlackDeath", "Conferma Email")
-                            ) £::alert("fad fa-exclamation-circle", "Il <b>server</b> dove è contenuto il sito non ha ben configurate le impostazioni delle <b>email</b>.", "info"); # Server non configurato per le email
-                            else return £::href("/?page=login&registered");
+                            $config = array_map(function ($x) use($pass) {
+                                $x[0] = preg_match($x[0], $pass);
+                                return $x;
+                            }, [
+                                [ "/[a-z]/", "Lettera minuscola" ],
+                                [ "/[A-Z]/", "Lettera maiuscola" ],
+                                [ "/[0-9]/", "Numero" ],
+                                [ "/\W(?<!\s)/", "Simbolo" ],
+                                [ "/.{8,}/", "Almeno di 8 caratteri" ]
+                            ]);
+
+                            if (count(array_filter($config, function ($x) { return !$x[0]; })) > 0)
+                                //| Password troppo semplice
+                                £::alert("fad fa-user-unlock", ob::func(function() use($config) {
+                                    ?>
+                                        La password inserita è <b>troppo semplice</b>.
+                                        <div class="text-left">
+                                            <?php foreach($config as $e): ?>
+                                                <i class="fad <?= $e[0] ? "fa-check-circle text-success" : "fa-times-circle text-danger" ?>"></i>
+                                                <?= $e[1] ?>
+                                                <br>
+                                            <?php endforeach ?>
+                                        </div>
+                                    <?php
+                                })(), "warning");
+                            else
+                            {
+                                //| Successo
+                                $id = uniqid();
+                                if (!$db("INSERT INTO utenti (id, nick, email, pass, creazione, attivo) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP(), 0)", [ $id, $nick, $user, password_hash($pass, PASSWORD_DEFAULT) ]))
+                                    £::alert("fad fa-bug", "Si è verificato un <b>errore</b> anomalo.", "danger"); # Errore anomalo
+                                else if (
+                                    !send(function() use($id) {
+                                        assemble("/private/mail", [
+                                            "link" => "{$_SERVER["HTTP_X_FORWARDED_PROTO"]}://{$_SERVER["HTTP_HOST"]}/?page=plain/db.php/confirm&data=" . urlencode(json_encode($id))
+                                        ]);
+                                    }, $user, "BigBlackDeath", "Conferma Email")
+                                ) £::alert("fad fa-exclamation-circle", "Il <b>server</b> dove è contenuto il sito non ha ben configurate le impostazioni delle <b>email</b>.", "info"); # Server non configurato per le email
+                                else return £::href("/?page=login&registered");
+                            }
                         }
                     }
                     else

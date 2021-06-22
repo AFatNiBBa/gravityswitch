@@ -74,12 +74,14 @@
     }
 
     $loggato = @$_SESSION["account"]["id"];
-    $id = ($mappa = @$_GET["mappa"])
-    ? $db("SELECT creatore FROM mappe WHERE id = ?", [ $mappa ], PDO::FETCH_COLUMN)[0]
-    : (
-        isset($_GET["id"])
-        ? json_decode($_GET["id"])
-        : $loggato
+    $id = (
+        ($mappa = @$_GET["mappa"])
+        ? $db->string("SELECT creatore FROM mappe WHERE id = ?", [ $mappa ])
+        : (
+            isset($_GET["id"])
+            ? json_decode($_GET["id"])
+            : $loggato
+        )
     );
     
     if ($search = isset($_GET["search"]))
@@ -126,7 +128,7 @@
 </script>
 
 <br>
-<?php if ($id): ?>
+<?php if ($id || $search): # Mostra se c'è "$id" o non c'è ma non si è in modalità ricerca ?>
     <div class="container">
         <h3 class="mb-3">
             <?php if($user): ?>
@@ -183,64 +185,64 @@
 <?php endif ?>
 
 <?php if(!$search): ?>
-<!-- Livelli -->
-<div class="container mb-5">
-    <h3 class="mb-3"> Livelli: </h3>
-    <div class="grow">
-        <?php foreach($db("SELECT * FROM ($query->tab_mappe) AS mappe WHERE creatore <=> ?", [ $id ]) as $row): ?>
-            <div <?= $row["id"] == $mappa ? 'id="selected" class="bg-warning"' : "" ?>>
-                <a class="card-link d-block" href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>">
-                    <span class="text-primary">
-                        #<?= htmlspecialchars($row["id"]) ?>
-                    </span>
-                    <br>
-                    <span class="text-black">
-                        <?= htmlspecialchars($row["blocchi"]) ?> blocchi
-                    </span>
-                </a>
-            </div>
-        <?php endforeach ?>
+    <!-- Livelli -->
+    <div class="container mb-5">
+        <h3 class="mb-3"> Livelli: </h3>
+        <div class="grow">
+            <?php foreach($db("SELECT * FROM ($query->tab_mappe) AS mappe WHERE creatore <=> ?", [ $id ]) as $row): ?>
+                <div <?= $row["id"] == $mappa ? 'id="selected" class="bg-warning"' : "" ?>>
+                    <a class="card-link d-block" href="/?page=game/<?= htmlspecialchars(urlencode($row["id"])) ?>">
+                        <span class="text-primary">
+                            #<?= htmlspecialchars($row["id"]) ?>
+                        </span>
+                        <br>
+                        <span class="text-black">
+                            <?= htmlspecialchars($row["blocchi"]) ?> blocchi
+                        </span>
+                    </a>
+                </div>
+            <?php endforeach ?>
+        </div>
     </div>
-</div>
 
-<!-- Partite -->
-<?php if($id): $out = $db("SELECT * FROM ($query->tab_partite) AS partite WHERE utente = ? ORDER BY creazione DESC", [ $id ]) ?>
-    <div class="container">
-        <h3 class="mb-3"> Partite: </h3>
-        <?php if (count($out)): ?>
-            <?php for($i = 0, $l = count($out), $sec = 3; $i < $l; $i += $sec): ?>
-                <div class="row mb-5">
-                    <?php for($k = $i; $k < $i + $sec && $k < $l; $k++): $row = $out[$k]; ?>
-                        <div class="col-lg-4 mb-5">
-                            <div class="card border-top border-top-lg border-secondary lift text-center o-visible h-100">
-                                <div class="card-body">
-                                    <!-- Icona -->
-                                    <div class="icon-stack icon-stack-xl bg-secondary-soft text-secondary mb-4 mt-n5 z-1 shadow"><i class="fad fa-game-board"></i></div>
-                                    <!-- Nome -->
-                                    <h5>#<?= htmlspecialchars($row["mappa"]) ?></h5>
-                                    <!-- Statistiche -->
-                                    <div class="card-text">
-                                        <?php show([
-                                            [ "Morti:", $row["morti"], "danger" ],
-                                            [ "Salti:", $row["salti"], "warning" ],
-                                            [ "Tempo:", $row["tempo"], "warning" ],
-                                            [ "Punti:", round($row["punteggio"] * 10000), "success" ]
-                                        ]) ?>
+    <!-- Partite -->
+    <?php if($id): $out = $db("SELECT * FROM ($query->tab_partite) AS partite WHERE utente = ? ORDER BY creazione DESC", [ $id ]) ?>
+        <div class="container">
+            <h3 class="mb-3"> Partite: </h3>
+            <?php if (count($out)): ?>
+                <?php for($i = 0, $l = count($out), $sec = 3; $i < $l; $i += $sec): ?>
+                    <div class="row mb-5">
+                        <?php for($k = $i; $k < $i + $sec && $k < $l; $k++): $row = $out[$k]; ?>
+                            <div class="col-lg-4 mb-5">
+                                <div class="card border-top border-top-lg border-secondary lift text-center o-visible h-100">
+                                    <div class="card-body">
+                                        <!-- Icona -->
+                                        <div class="icon-stack icon-stack-xl bg-secondary-soft text-secondary mb-4 mt-n5 z-1 shadow"><i class="fad fa-game-board"></i></div>
+                                        <!-- Nome -->
+                                        <h5>#<?= htmlspecialchars($row["mappa"]) ?></h5>
+                                        <!-- Statistiche -->
+                                        <div class="card-text">
+                                            <?php show([
+                                                [ "Morti:", $row["morti"], "danger" ],
+                                                [ "Salti:", $row["salti"], "warning" ],
+                                                [ "Tempo:", $row["tempo"], "warning" ],
+                                                [ "Punti:", round($row["punteggio"] * 10000), "success" ]
+                                            ]) ?>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="/?page=account&mappa=<?= htmlspecialchars(urlencode($row["mappa"])) ?>" class="card-link text-secondary font-weight-bold d-inline-flex align-items-center">
+                                            Livello<i class="fas fa-arrow-right text-xs ml-1"></i>
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <a href="/?page=account&mappa=<?= htmlspecialchars(urlencode($row["mappa"])) ?>" class="card-link text-secondary font-weight-bold d-inline-flex align-items-center">
-                                        Livello<i class="fas fa-arrow-right text-xs ml-1"></i>
-                                    </a>
-                                </div>
                             </div>
-                        </div>
-                    <?php endfor ?>
-                </div>
-            <?php endfor ?>
-        <?php else: ?>
-            Non sono state trovate partite.
-        <?php endif ?>
-    </div>
-<?php endif ?>
+                        <?php endfor ?>
+                    </div>
+                <?php endfor ?>
+            <?php else: ?>
+                Non sono state trovate partite.
+            <?php endif ?>
+        </div>
+    <?php endif ?>
 <?php endif ?>
